@@ -1,0 +1,2 @@
+1.4 - Performance enhancements
+      Fixed a bug with displaying the help message

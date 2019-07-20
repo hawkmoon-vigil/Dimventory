@@ -95,7 +95,6 @@ function _g.textInputDialog:OKPress()
 	self:SetVisible(false)
 	_g.print("Adding dimension: " .. self.value)
 	_g.data.addDimension(self.value)
-	_g.print(self.value .. " added")
 end
 
 function _g.textInputDialog:ShowDialog()

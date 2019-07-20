@@ -28,22 +28,7 @@ function _g.DataGrid:Init(name, width, height, context)
 	self._lblDimension:SetPoint("TOPLEFT", self._lblServer, "TOPLEFT", 200, 0)
 	
 	function self._serverSelect.Event:ItemSelect(item, value, index)
-		--dump("item selected" .. item .. " " .. value .. " " .. tostring(index))
-		local dims = { "(All)" }
-		
-		if value ~= "(All)" then
-			for _, data in pairs(DimensionInventorySave[value]) do
-				for _, instance in ipairs(data) do
-					table.insert(dims, instance.name)
-				end
-			end
-			_g.data.filter(value, nil, self.parent._txtFilter:GetText())
-			self.parent._pageNumber = 1
-		end
-		
-		table.sort(dims)
-		self.parent._dimensionSelect:SetItems(dims, dims)
-		self.parent._grid:refresh()
+		_g.data.filter(value, self.parent._dimensionSelect:GetSelectedValue(), self.parent._txtFilter:GetText())
 	end
 	
 	self._dimensionSelect = UI.CreateFrame("SimpleSelect", "dimensionSelect", self._frame)
@@ -51,13 +36,8 @@ function _g.DataGrid:Init(name, width, height, context)
 	self._dimensionSelect:SetWidth(150)
 	self._dimensionSelect.parent = self
 	function self._dimensionSelect.Event:ItemSelect(item, value, index)
-		local server = self.parent._serverSelect:GetSelectedValue()
-		_g.data.filter(server, value, self.parent._txtFilter:GetText())
-		self.parent._pageNumber = 1
-		self.parent._grid:refresh()
+		_g.data.filter(self.parent._serverSelect:GetSelectedValue(), value, self.parent._txtFilter:GetText())
 	end
-	
-
 
 	self._lblFilter = _g.Context.CreateLabel("Filter", "Filter", self._frame)
 	self._lblFilter:SetPoint("TOPLEFT", self._lblDimension, "TOPLEFT", 200, 0)
@@ -135,7 +115,7 @@ function _g.DataGrid:Init(name, width, height, context)
 	function self._grid:NextPage()
 		local oldPage = self.parent._pageNumber
 		self.parent._pageNumber = self.parent._pageNumber + 1
-		local pageMax = math.ceil(#_g.dataRows / self.parent._pageItemCount)
+		local pageMax = math.ceil(#_g.data.filteredDataRows / self.parent._pageItemCount)
 		if self.parent._pageNumber > pageMax then
 			self.parent._pageNumber = pageMax
 		end
@@ -160,21 +140,26 @@ function _g.DataGrid:Init(name, width, height, context)
 	function self._grid:refresh()
 		local startIndex = (self.parent._pageNumber - 1) * self.parent._pageItemCount + 1
 		local endIndex = self.parent._pageNumber * self.parent._pageItemCount
-		local total = #_g.dataRows;
+		local total = #_g.data.filteredDataRows
 		if endIndex > total then
 			endIndex = total
 		end
+		
+		if startIndex > endIndex then
+			startIndex = 1
+		end	
+		
 		self.parent:SetStatus(startIndex, endIndex, total)
 
 		local rowIndex = 0
 		for _, rowFrame in ipairs(self.rowFrames) do
 			local colIndex = 1
-			local rowData = _g.dataRows[startIndex + rowIndex]
+			local rowData = _g.data.filteredDataRows[startIndex + rowIndex]
 			
 			for _, cell in ipairs(rowFrame.cells) do
 				if rowData then
 					if colIndex == 1 then
-						cell:SetText(rowData.itemName)
+						cell:SetText(rowData.name)
 					elseif colIndex == 2 then
 						cell:SetText(tostring(rowData.count))
 					elseif colIndex == 3 then
@@ -198,6 +183,7 @@ function _g.DataGrid:Init(name, width, height, context)
 
 	self._lblTotal = _g.Context.CreateLabel("Status", "Status", self._frame)
 	self._lblTotal:SetPoint("TOPCENTER", self._lblPage, "BOTTOMCENTER", 0, 10)
+	self:onLoad()
 end
 
 function _g.DataGrid:refresh()
@@ -250,51 +236,22 @@ end
 
 function _g.DataGrid:SetStatus(startIndex, endIndex, total)
 	self._lblPage:SetText(tostring(startIndex) .. "-" .. endIndex .. " of " .. tostring(total))
-	self._lblTotal:SetText(tostring(_g.totalItems) .. " total items")
+	self._lblTotal:SetText(tostring(_g.data.totalItems) .. " total items")
 end
 
-function _g.DataGrid:LoadServers()
-	local servers = {
-		"(All)"
-	}
-	
-	for server, _ in pairs(DimensionInventorySave) do
-		table.insert(servers, server)
-	end
-	
-	table.sort(servers)
-	
-	local defaultDimensions = { "(All)" }
-	self._serverSelect:SetItems(servers, servers)
-	self._dimensionSelect:SetItems(defaultDimensions, defaultDimensions)
+function _g.DataGrid:LoadSelectBoxes()
+	self._dimensionSelect:SetItems(_g.data.dimensions, _g.data.dimensions)
+	self._serverSelect:SetItems(_g.data.shards, _g.data.shards)
 end
 
 function _g.DataGrid:onLoad()
 	local rowData = {}
-	local startIndex = (self._pageNumber - 1) * self._pageItemCount + 1
-	local endIndex = self._pageNumber * self._pageItemCount
-	local total = #_g.dataRows
-	
-	if endIndex > total then 
-		endIndex = total
-	end
-
-	self:SetStatus(startIndex, endIndex, total)
-	
-	--for i = startIndex, endIndex do
-	--	local item = _g.dataRows[i]
-	--	local row = self:createRow(item)
-	--	table.insert(rowData, row)
-	--end
 	
 	for i = 1, self._pageItemCount do
 		table.insert(rowData, self:createBlankRow())
 	end
 
 	self._grid:SetRows(rowData)
-	self:refresh()
-	
-	self:LoadServers()
 end
 
 function _g.DataGrid:SetVisible(value)

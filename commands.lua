@@ -9,7 +9,9 @@ function _g.printError(s)
 end
 
 local commandHandler = function(val)
-	if val == "reset" then
+	if val == "find" then
+		_g.print(_g.data.findCurrentDimension() or "not found")
+	elseif val == "reset" then
 		DimensionInventorySave = { }
 		_g.data.onLoad()
 		_g.print("dimventory data reset")
@@ -17,7 +19,6 @@ local commandHandler = function(val)
 		local toRemove = val:sub(8,-1)
 		_g.print("removing dimension " .. toRemove)
 		_g.data.removeDimension(toRemove)
-		_g.data.onLoad()
 		_g.dataGrid:onLoad()
 		_g.btnToggle:UpdateTextures()
 	else

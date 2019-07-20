@@ -2,7 +2,7 @@ Identifier = "Dimventory"
 Name = "Dimventory"
 Description = "Tracks dimension inventory"
 Author = "Sheepy@Faeblight"
-Version = "1.3"
+Version = "1.4"
 Email = "none@none.com"
 
 Environment = "4.3"
@@ -14,7 +14,6 @@ RunOnStartup = {
   "texturebutton.lua",
   "datagrid.lua",
   "textinputdialog.lua",
-  "dialog.lua",
   "togglebutton.lua",
   "commands.lua",
   "events.lua"

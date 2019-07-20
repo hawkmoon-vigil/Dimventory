@@ -9,10 +9,7 @@ _g.btnToggle:SetPoint("TOPRIGHT", UI.Native.MapMini, "TOPRIGHT", 0, 24)
 function _g.btnToggle:LeftClick()
 	if _g.data.currentDimension then
 		_g.print(_g.data.currentDimension .. " removed.")
-		_g.data.removeCurrentDimension()
-		_g.data.onLoad()
-		_g.dataGrid:onLoad()
-		self:UpdateTextures()
+		_g.data.removeDimension()
 	else
 		_g.textInputDialog:ShowDialog()
 	end
