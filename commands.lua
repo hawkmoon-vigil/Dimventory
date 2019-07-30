@@ -15,6 +15,10 @@ local commandHandler = function(val)
 		DimensionInventorySave = { }
 		_g.data.onLoad()
 		_g.print("dimventory data reset")
+	elseif  val == "resetui" then
+		_g.data.resetUI()
+		_g.btnToggle:SetInitialPosition()
+		_g.btnList:SetInitialPosition()
 	elseif val:find("remove ") then
 		local toRemove = val:sub(8,-1)
 		_g.print("removing dimension " .. toRemove)

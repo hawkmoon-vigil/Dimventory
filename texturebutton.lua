@@ -7,9 +7,13 @@ function _g.TextureButton:new(name, normalTexture, overTexture, context)
 	setmetatable(button, self)
 	button.__index = ability
 	button._texture = UI.CreateFrame("Texture", name, context)
+	button._name = name
 	button._texture:SetTexture("Dimventory", normalTexture)
 	button._normalImg = normalTexture
 	button._overImg = overTexture
+	button._draggable = true
+	button._texture.parent = button
+	
 	function button._texture.Event:MouseIn()
 		button._mouseIn = true
 		button._texture:SetTexture("Dimventory", button._normalImg)
@@ -22,6 +26,38 @@ function _g.TextureButton:new(name, normalTexture, overTexture, context)
 	function button._texture.Event:LeftClick()
 		button:LeftClick()
 	end
+	
+	function button._texture.Event:RightDown()
+		if not self.parent._draggable then
+			return
+		end
+
+		local mouseData = Inspect.Mouse()
+		self._xOffset = self:GetLeft() - mouseData.x
+		self._yOffset = self:GetTop() - mouseData.y
+		self:ClearAll()
+		self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", self._xOffset, self._yOffset)
+		local mouseData = Inspect.Mouse()
+		self.rightDown = true
+	end
+	
+	function button._texture.Event:RightUp()
+		if not self.parent._draggable then
+			return
+		end
+		
+		_g.data.saveButtonPosition(self.parent._name, self:GetLeft(), self:GetTop())
+		self.rightDown = false
+	end
+
+	function button._texture.Event:MouseMove(mouseX, mouseY)
+		if not self.parent._draggable or not self.rightDown then
+			return
+		end
+
+		self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouseX + self._xOffset, mouseY + self._yOffset)
+	end
+
 	
 	return button
 end
@@ -46,4 +82,7 @@ end
 
 function _g.TextureButton:SetVisible(flag)
 	self._texture:SetVisible(flag)
+end
+
+function _g.TextureButton:SetInitialPosition()
 end

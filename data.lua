@@ -132,14 +132,16 @@ local loadData = function()
 	_g.data.dimensions = { "(All)" }
 	
 	for serverName, serverData in pairs(DimensionInventorySave) do
-		table.insert(_g.data.shards, serverName)
-		for dimensionType, dimensionArray in pairs(serverData) do
-			for _, dimensionInstance in ipairs(dimensionArray) do
-				table.insert(_g.data.dimensions, dimensionInstance.name)
-				for itemType, itemInstanceData in pairs(dimensionInstance.items) do
-					addDataRow(itemInstanceData, serverName, dimensionInstance.name)
-					for _, instance in ipairs(itemInstanceData.instances) do
-						addLookupItemFromSave(serverName, dimensionType, itemType, instance, dimensionInstance.name)
+		if serverName ~= "ui" then
+			table.insert(_g.data.shards, serverName)
+			for dimensionType, dimensionArray in pairs(serverData) do
+				for _, dimensionInstance in ipairs(dimensionArray) do
+					table.insert(_g.data.dimensions, dimensionInstance.name)
+					for itemType, itemInstanceData in pairs(dimensionInstance.items) do
+						addDataRow(itemInstanceData, serverName, dimensionInstance.name)
+						for _, instance in ipairs(itemInstanceData.instances) do
+							addLookupItemFromSave(serverName, dimensionType, itemType, instance, dimensionInstance.name)
+						end
 					end
 				end
 			end
@@ -312,6 +314,7 @@ function _g.data.findCurrentDimension()
 		return nil
 	end
 	
+	Command.System.Watchdog.Quiet()
 	local shard = Inspect.Shard().name
 	local dimensionType = Inspect.Unit.Detail("player").locationName
 	local candidates = {}
@@ -421,6 +424,7 @@ end
 
 local _refreshCR = nil
 function _g.data.refresh()
+	_g.btnToggle:UpdateTextures()
 	if _refreshCR and coroutine.status(_refreshCR) ~= "dead" then
 		return
 	end
@@ -467,4 +471,21 @@ function _g.data.filter(shard, dimension, filter)
 	end
 	filterGridDataTable()
 	updateUIComponents()
+end
+
+function _g.data.saveButtonPosition(name, x, y)
+	if not DimensionInventorySave.ui then
+		DimensionInventorySave.ui = {}
+	end
+	
+	if not DimensionInventorySave.ui.buttons then
+		DimensionInventorySave.ui.buttons = {}
+	end
+	
+	DimensionInventorySave.ui.buttons[name] = { x = x, y = y }
+end
+
+function _g.data.resetUI()
+	DimensionInventorySave.ui = {}
+	DimensionInventorySave.ui.buttons = {}
 end

@@ -4,8 +4,7 @@ _g.btnToggle = _g.Context.CreateTextureButton(
 	"btnAddRemove",
 	"img/btn_zoomin_(normal).png",
 	"img/btn_zoomin_(over).png")
-_g.btnToggle:SetPoint("TOPRIGHT", UI.Native.MapMini, "TOPRIGHT", 0, 24)
-
+	
 function _g.btnToggle:LeftClick()
 	if _g.data.currentDimension then
 		_g.print(_g.data.currentDimension .. " removed.")
@@ -25,4 +24,17 @@ function _g.btnToggle:UpdateTextures()
 		self:ChangeTextures("img/btn_zoomin_(normal).png", "img/btn_zoomin_(over).png")
 		self:SetVisible(true)
 	end
+end
+
+function _g.btnToggle:SetInitialPosition()
+	self._texture:ClearAll()
+	if DimensionInventorySave and DimensionInventorySave.ui and DimensionInventorySave.ui.buttons then
+		local data = DimensionInventorySave.ui.buttons[self._name]
+		if data then
+			self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", data.x, data.y)
+			return
+		end
+	end
+
+	self:SetPoint("TOPRIGHT", UI.Native.MapMini, "TOPRIGHT", 0, 24)
 end
