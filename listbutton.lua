@@ -13,10 +13,9 @@ end
 
 function _g.btnList:SetInitialPosition()
 	self._texture:ClearAll()
-	if DimensionInventorySave and DimensionInventorySave.ui and DimensionInventorySave.ui.buttons then
-		local data = DimensionInventorySave.ui.buttons[self._name]
+	if DIUISave and DIUISave.buttons then
+		local data = DIUISave.buttons[self._name]
 		if data then
-			dump("btnList save data found")
 			self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", data.x, data.y)
 			return
 		end

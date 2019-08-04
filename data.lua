@@ -132,16 +132,14 @@ local loadData = function()
 	_g.data.dimensions = { "(All)" }
 	
 	for serverName, serverData in pairs(DimensionInventorySave) do
-		if serverName ~= "ui" then
-			table.insert(_g.data.shards, serverName)
-			for dimensionType, dimensionArray in pairs(serverData) do
-				for _, dimensionInstance in ipairs(dimensionArray) do
-					table.insert(_g.data.dimensions, dimensionInstance.name)
-					for itemType, itemInstanceData in pairs(dimensionInstance.items) do
-						addDataRow(itemInstanceData, serverName, dimensionInstance.name)
-						for _, instance in ipairs(itemInstanceData.instances) do
-							addLookupItemFromSave(serverName, dimensionType, itemType, instance, dimensionInstance.name)
-						end
+		table.insert(_g.data.shards, serverName)
+		for dimensionType, dimensionArray in pairs(serverData) do
+			for _, dimensionInstance in ipairs(dimensionArray) do
+				table.insert(_g.data.dimensions, dimensionInstance.name)
+				for itemType, itemInstanceData in pairs(dimensionInstance.items) do
+					addDataRow(itemInstanceData, serverName, dimensionInstance.name)
+					for _, instance in ipairs(itemInstanceData.instances) do
+						addLookupItemFromSave(serverName, dimensionType, itemType, instance, dimensionInstance.name)
 					end
 				end
 			end
@@ -213,7 +211,8 @@ local passesTextFilter = function(name)
 	
 	local status, result = pcall(
 		function() 
-			return string.find(name:lower(), _textFilter) 
+			-- use plain text matching
+			return string.find(name:lower(), _textFilter, 1, true) 
 		end)
 	if not status then
 		--print(result)
@@ -474,18 +473,22 @@ function _g.data.filter(shard, dimension, filter)
 end
 
 function _g.data.saveButtonPosition(name, x, y)
-	if not DimensionInventorySave.ui then
-		DimensionInventorySave.ui = {}
+	if not DIUISave.buttons then
+		DIUISave.buttons = {}
 	end
 	
-	if not DimensionInventorySave.ui.buttons then
-		DimensionInventorySave.ui.buttons = {}
+	DIUISave.buttons[name] = { x = x, y = y }
+end
+
+function _g.data.getButtonPosition(name)
+	if not DIUISave.buttons then
+		DIUISave.buttons = {}
 	end
 	
-	DimensionInventorySave.ui.buttons[name] = { x = x, y = y }
+	return DIUISave.buttons[name]
 end
 
 function _g.data.resetUI()
-	DimensionInventorySave.ui = {}
-	DimensionInventorySave.ui.buttons = {}
+	DIUISave = {}
+	DIUISave.buttons = {}
 end

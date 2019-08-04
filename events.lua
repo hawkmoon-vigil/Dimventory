@@ -22,10 +22,12 @@ end
 
 function Callback:var_save_begin()
 	DimensionInventory = DimensionInventorySave
+	DIUI = DIUISave
 end
 
 function Callback:var_load_end()
 	DimensionInventorySave = DimensionInventory or {}
+	DIUISave = DIUI or {}
 	_g.btnToggle:SetInitialPosition()
 	_g.btnList:SetInitialPosition()
 end

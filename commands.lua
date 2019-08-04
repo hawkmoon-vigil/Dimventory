@@ -11,14 +11,22 @@ end
 local commandHandler = function(val)
 	if val == "find" then
 		_g.print(_g.data.findCurrentDimension() or "not found")
-	elseif val == "reset" then
+	elseif val == "resetdata" then
 		DimensionInventorySave = { }
 		_g.data.onLoad()
 		_g.print("dimventory data reset")
+	elseif val == "reset" then
+		DimensionInventorySave = { }
+		DIUISave = { }
+		_g.data.onLoad()
+		_g.btnToggle:SetInitialPosition()
+		_g.btnList:SetInitialPosition()
+		_g.print("dimventory data and UI reset")
 	elseif  val == "resetui" then
 		_g.data.resetUI()
 		_g.btnToggle:SetInitialPosition()
 		_g.btnList:SetInitialPosition()
+		_g.print("dimventory UI reset")
 	elseif val:find("remove ") then
 		local toRemove = val:sub(8,-1)
 		_g.print("removing dimension " .. toRemove)
