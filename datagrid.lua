@@ -74,7 +74,7 @@ function _g.DataGrid:Init(name, width, height, context)
 	self._grid:SetColumnWidth(1, 300)
 	self._grid:SetColumnWidth(2, 50)
 	self._grid:SetColumnWidth(3, 100)
-	self._grid:SetColumnWidth(4, 280)
+	self._grid:SetColumnWidth(4, 320)
 	self._grid:SetRowBorder(1, 0.16, 0.16, 0.16, 1)
 	self._grid:SetBorder(1, 0.16, 0.16, 0.16, 1)
 	self._pageNumber = 1
@@ -258,6 +258,6 @@ function _g.DataGrid:SetVisible(value)
 	self._frame:SetVisible(value)
 end
 
-_g.dataGrid = _g.Context.CreateDataGrid("", 800, 550)
+_g.dataGrid = _g.Context.CreateDataGrid("", 850, 550)
 _g.dataGrid:SetPoint("CENTER", UIParent, "CENTER")
 _g.dataGrid:SetVisible(false)

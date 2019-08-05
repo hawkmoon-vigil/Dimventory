@@ -2,7 +2,7 @@ Identifier = "Dimventory"
 Name = "Dimventory"
 Description = "Tracks dimension inventory"
 Author = "Sheepy@Faeblight"
-Version = "1.4"
+Version = "1.5"
 Email = "none@none.com"
 
 Environment = "4.3"
@@ -15,8 +15,9 @@ RunOnStartup = {
   "datagrid.lua",
   "textinputdialog.lua",
   "togglebutton.lua",
+  "listbutton.lua",
   "commands.lua",
-  "events.lua"
+  "events.lua",
 }
 
 Embed = {
@@ -29,5 +30,6 @@ Dependencies = {
 
 
 SavedVariables = {
-	DimensionInventory = "account"
+	DimensionInventory = "account",
+	DIUI = "character",
 }

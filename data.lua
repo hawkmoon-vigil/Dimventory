@@ -211,7 +211,8 @@ local passesTextFilter = function(name)
 	
 	local status, result = pcall(
 		function() 
-			return string.find(name:lower(), _textFilter) 
+			-- use plain text matching
+			return string.find(name:lower(), _textFilter, 1, true) 
 		end)
 	if not status then
 		--print(result)
@@ -312,6 +313,7 @@ function _g.data.findCurrentDimension()
 		return nil
 	end
 	
+	Command.System.Watchdog.Quiet()
 	local shard = Inspect.Shard().name
 	local dimensionType = Inspect.Unit.Detail("player").locationName
 	local candidates = {}
@@ -421,6 +423,7 @@ end
 
 local _refreshCR = nil
 function _g.data.refresh()
+	_g.btnToggle:UpdateTextures()
 	if _refreshCR and coroutine.status(_refreshCR) ~= "dead" then
 		return
 	end
@@ -467,4 +470,25 @@ function _g.data.filter(shard, dimension, filter)
 	end
 	filterGridDataTable()
 	updateUIComponents()
+end
+
+function _g.data.saveButtonPosition(name, x, y)
+	if not DIUISave.buttons then
+		DIUISave.buttons = {}
+	end
+	
+	DIUISave.buttons[name] = { x = x, y = y }
+end
+
+function _g.data.getButtonPosition(name)
+	if not DIUISave.buttons then
+		DIUISave.buttons = {}
+	end
+	
+	return DIUISave.buttons[name]
+end
+
+function _g.data.resetUI()
+	DIUISave = {}
+	DIUISave.buttons = {}
 end

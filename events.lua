@@ -22,10 +22,14 @@ end
 
 function Callback:var_save_begin()
 	DimensionInventory = DimensionInventorySave
+	DIUI = DIUISave
 end
 
 function Callback:var_load_end()
 	DimensionInventorySave = DimensionInventory or {}
+	DIUISave = DIUI or {}
+	_g.btnToggle:SetInitialPosition()
+	_g.btnList:SetInitialPosition()
 end
 
 function Callback:update_end()
@@ -43,17 +47,6 @@ function Callback:addon_loaded(identifier)
 		return
 	end
 	
-	_g.btnList = _g.Context.CreateTextureButton(
-		"btnList",
-		"img/btn_dimensions_top_manage_(normal).png",
-		"img/btn_dimensions_top_manage_(over).png")
-	
-	_g.btnList:SetPoint("BOTTOMRIGHT", UI.Native.MapMini, "BOTTOMRIGHT", -10, -10)
-	function _g.btnList:LeftClick()
-		if DimensionInventorySave and next(DimensionInventorySave) then
-			_g.dataGrid:SetVisible(true)
-		end
-	end
 	_g.data.onLoad()
 end
 
