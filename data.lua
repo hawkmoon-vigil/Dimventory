@@ -298,9 +298,9 @@ function _g.data.onLoad()
 		return
 	end
 	
-	Command.System.Watchdog.Quiet()
 	local cr = coroutine.create(
 		function ()
+			Command.System.Watchdog.Quiet()
 			loadData()
 			_g.dataGrid:LoadSelectBoxes()
 		end)
@@ -437,17 +437,19 @@ function _g.data.refresh()
 		return
 	end
 	
-	if not _g.data.currentDimension then
-		_g.data.currentDimension = _g.data.findCurrentDimension()
-		if not _g.data.currentDimension then
-			updateUIComponents()
-			return
-		end
-	end
 	
 	if _g.data.isDirty then
 		_refreshCR = coroutine.create(
 			function()
+				Command.System.Watchdog.Quiet()
+				if not _g.data.currentDimension then
+					_g.data.currentDimension = _g.data.findCurrentDimension()
+					if not _g.data.currentDimension then
+						updateUIComponents()
+						return
+					end
+				end
+
 				local dimName = _g.data.currentDimension
 				_g.data.removeDimension(dimName)
 				_g.data.addDimension(dimName)

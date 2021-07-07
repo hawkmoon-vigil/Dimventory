@@ -35,7 +35,9 @@ local commandHandler = function(val)
 		_g.btnToggle:UpdateTextures()
 	else
 		_g.printError("command line options:")
-		_g.printError("  reset                  - removes all local data and resets dimension tracking")
+		_g.printError("  reset            - removes all local data and resets dimension tracking")
+		_g.printError("  resetdata        - leaves button positions intact, but erases all data - requires a reload UI")
+		_g.printError("  resetui          - moves buttons back to their original location")
 		_g.printError("  remove &lt;dimname&gt; - removes a dimension from the tracked list")
 	end
 end

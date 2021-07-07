@@ -1,8 +1,8 @@
 Identifier = "Dimventory"
 Name = "Dimventory"
 Description = "Tracks dimension inventory"
-Author = "Sheepy@Faeblight"
-Version = "1.5"
+Author = "Sheepers@Deepwood"
+Version = "1.6"
 Email = "none@none.com"
 
 Environment = "4.3"
